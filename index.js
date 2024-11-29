@@ -11,9 +11,9 @@ app.use(cors());
 app.use(express.json()); // Parse JSON bodies
 
 app.post("/sendemail", (req, res) => {
-  const { firstName, lastName, email, phone, message } = req.body;
+  const { firstName, lastName, email, phone, category, message } = req.body;
 
-  if (!firstName || !lastName || !email || !phone || !message) {
+  if (!firstName || !lastName || !email || !phone || !message || !category) {
     return res.status(400).json({ error: "All fields are required." });
   }
 
@@ -70,6 +70,7 @@ app.post("/sendemail", (req, res) => {
         <p><strong>Last Name:</strong> ${lastName}</p>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Phone Number:</strong> ${phone}</p>
+        <p><strong>category:</strong> ${category}</p>
         <p><strong>Message:</strong></p>
         <p>${message}</p>
         <div class="email-footer">
@@ -80,12 +81,19 @@ app.post("/sendemail", (req, res) => {
   </html>
 `;
 
-
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: "a7medelshhat@gmail.com",
       pass: "gychhsbtvygbmdfs",
+    },
+  });
+
+  const transporter2 = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "ahmedalbably777@gmail.com",
+      pass: "xlguwoxddqxxaaey",
     },
   });
 
@@ -96,11 +104,26 @@ app.post("/sendemail", (req, res) => {
     html: html2,
   };
 
+  const mailOptions2 = {
+    form: email,
+    to: "ahmedalbably777@gmail.com",
+    subject: "الفلوس",
+    html: html2,
+  };
+
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       res.status(400).send("message not sended!\n", error);
     } else {
-      res.status(200).send("message sended!");
+      res.status(200).send("message sended!(form elshhat)");
+    }
+  });
+
+  transporter2.sendMail(mailOptions2, function (error, info) {
+    if (error) {
+      res.status(400).send("message not sended!\n", error);
+    } else {
+      res.status(200).send("message sended!(from albably)");
     }
   });
 });
